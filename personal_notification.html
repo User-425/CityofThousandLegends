@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Vela - Your Personal Helper</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Vela</h1>
+        <div id="date"></div>
+        <div id="clock"></div>
+        <!-- 
+    <div id="eventInput">
+        <label for="eventDate">Event Date: </label>
+        <input type="date" id="eventDate">
+        <label for="eventTime">Event Time: </label>
+        <input type="time" id="eventTime">
+        <label for="eventName">Event Name: </label>
+        <input type="text" id="eventName">
+        <button class="btn btn-primary" onclick="scheduleEvent()">Schedule Event</button>
+    </div> -->
+        <br>
+        <div class="text-start">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create
+                Event [+]</button>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#upcomingEventModal"
+                onclick="displayUpcomingEvents()" href="#">Upcoming
+                Event</button>
+        </div>
+
+        <div id="eventsList" class="container">
+            <h2>Scheduled Events</h2>
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="events"></tbody>
+            </table>
+        </div>
+
+        <!-- Upcoming Event Modal -->
+        <div class="modal modal-xl fade" id="upcomingEventModal" tabindex="-1" role="dialog"
+            aria-labelledby="upcomingEventModalLabel">
+            <div class="modal-dialog modal-dialog-scrollable" role="document" aria-hidden="true">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="upcomingModalLabel">Upcoming Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="timeRange">Filter by Time Range:</label>
+                        <select id="timeRange" onchange="filterEventsByTimeRange(),displayUpcomingEvents()">
+                            <option value="15mins" selected>15 Minutes</option>
+                            <option value="1h">1 Hour</option>
+                            <option value="1d">1 Day</option>
+                            <option value="1w">1 Week</option>
+                            <option value="1m">1 Month</option>
+                        </select>
+                        <table class="table text-center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="upcomingEvents"></tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Modal -->
+        <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createModalLabel">Create Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createForm">
+                            <div class="form-group">
+                                <label for="createEventName">Event Name:</label>
+                                <input type="text" class="form-control" id="createEventName" required>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="createEventDescription">Event Description:</label>
+                                <textarea type="description" cols="2" class="form-control"
+                                    id="createEventDescription"></textarea>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="createEventDate">Event Date:</label>
+                                    <input type="date" class="form-control" id="createEventDate" required>
+                                </div>
+                                <div class="col">
+                                  <label for="createEventTime">Event Time:</label>
+                                  <input type="time" class="form-control" id="createEventTime" required>
+                                </div>
+                                <div class="col">
+                                    <label for="repeatPattern">Repeat:</label>
+                                    <select class="form-select" id="repeatPattern">
+                                        <option value="none">None</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="annually">Annually</option>
+                                    </select>
+                                </div>
+                              </div>
+                              <br>
+                            <div class="form-group text-start">
+                                <input type="checkbox" id="createEventActivated">
+                                <label for="createEventActivated">Event Activated</label>
+                            </div><br>
+                            <div class="text-end">
+                                <button class="btn btn-primary" href="#" onclick="scheduleEvent()">Create</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label for="editEventName">Event Name:</label>
+                                <input type="text" class="form-control" id="editEventName" required>
+                            </div><br>
+                            <div class="form-group">
+                                <label for="editEventDescription">Event Description:</label>
+                                <textarea type="description" cols="2" class="form-control"
+                                    id="editEventDescription"></textarea>
+                            </div><br>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="editEventDate">Event Date:</label>
+                                    <input type="date" class="form-control" id="editEventDate" required>
+                                </div>
+                                <div class="col">
+                                    <label for="editEventTime">Event Time:</label>
+                                    <input type="time" class="form-control" id="editEventTime" required>
+                                </div>
+                                <div class="col">
+                                    <label for="repeatPattern">Repeat:</label>
+                                    <select class="form-select" id="editRepeatPattern">
+                                        <option value="none">None</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="annually">Annually</option>
+                                    </select>
+                                </div>
+                              </div>
+                              <br>
+                            <div class="form-group text-start">
+                                <input type="checkbox" id="editEventActivated">
+                                <label for="editEventActivated">Event Activated</label>
+                            </div><br>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this event?</p>
+                        <button type="button" class="btn btn-danger" onclick="deleteEventConfirmation()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="script/jquery.js"></script>
+    <script src="script/popper.js"></script>
+    <script src="script/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloxflip Rain Notifier</title>
+</head>
+
+<body>
+
+  <script>
+    const minimum = 400;  // Replace with your actual minimum value
+    const refreshConfig = 15;   // Replace with your actual refresh value
+    const refresh = refreshConfig * 1000;
+
+    // Function to show a browser notification
+    function showNotification(prize, duration) {
+      if (Notification.permission === "granted") {
+        const options = {
+          body: `Rain amount: ${prize} R$\nExpiration: ${duration} minutes\n\n`,
+        };
+        const notification = new Notification("Bloxflip Rain!", options);
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(function (permission) {
+          if (permission === "granted") {
+            showNotification(prize, duration);
+          }
+        });
+      }
+    }
+
+    // Function to send a webhook
+    async function sendMessage(prize, duration) {
+      const webhookURL = "https://discord.com/api/webhooks/1194718357635735683/nRNIVbx7KcJ4YphSRQBkz9euo9Ni5fMHLHBb9TEtEl0lyzAwT4nMUU-AtgfrP8xj6L_1";
+      const embed = {
+        title: "Bloxflip Rain!",
+        description: "Get it Now!",
+        color: 0xFFC800, // Hex color code (e.g., 0xFFC800 for yellow)
+        fields: [
+          {
+            name: "Prize",
+            value: prize,
+            inline: true, // Set to true if you want the fields to appear inline
+          },
+          {
+            name: "Duration",
+            value: duration + " minutes",
+            inline: true,
+          },
+        ],
+        timestamp: new Date(),
+        footer: {
+          text: "Embed Footer",
+          icon_url: "https://example.com/footer_icon.png", // URL for the footer icon (optional)
+        },
+      };
+
+      const params = {
+        username: "Spidey Bot",
+        avatar_url: "",
+        content:  `$`+prize +`!! @here  @everyone\n`,
+        embeds:[embed],
+      };
+
+      try {
+        const response = await fetch(webhookURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(params),
+        });
+
+        if (response.ok) {
+          console.log('Webhook message sent successfully');
+        } else {
+          console.error('Failed to send webhook message:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('Error while sending webhook message:', error);
+      }
+    }
+
+    // Main loop
+    (function mainLoop() {
+      try {
+        fetch('https://api.bloxflip.com/chat/history')
+          .then(response => response.json())
+          .then(data => {
+            // Set your minimum and refresh values
+            const convert = (data.duration / (1000 * 60)) % 60;
+            const waiting = (convert * 60 + 10);
+
+            if (data.rain.active) {
+              console.log("Rain is active!");
+              if (data.prize >= minimum) {
+                const grabprize = String(data.prize).slice(0, -2);
+                const prize = new Intl.NumberFormat().format(parseInt(grabprize));
+                const host = data.host;
+                const umduration = data.duration + data.created;
+                const eduration = umduration / 1000;
+                const duration = Math.round(eduration);
+                const sent = new Date().toLocaleString();
+
+                console.log(`Bloxflip Rain!\nRain amount: ${prize} R$\nExpiration: ${duration} minutes\nHost: ${host}\nTimestamp: ${sent}\n\n`);
+
+                const content = {
+                  embeds: [{
+                    title: `${host} is hosting a chat rain!`,
+                    url: "https://bloxflip.com",
+                    color: 0xFFC800,
+                    fields: [
+                      { name: "Rain Amount", value: `${prize} R$` },
+                      { name: "Expiration", value: `<t:${duration}:R>` }
+                    ],
+                    timestamp: new Date(umduration),
+                  }]
+                };
+                sendMessage(prize, convert);
+                showNotification(prize, convert);
+              }
+              setTimeout(mainLoop, waiting);
+            } else {
+              console.log("Rain is not active :(");
+              setTimeout(mainLoop, refresh);
+            }
+          })
+          .catch(error => {
+            console.error('Error while fetching data:', error);
+            setTimeout(mainLoop, refresh);
+          });
+      } catch (e) {
+        console.error(e);
+        setTimeout(mainLoop, refresh);
+      }
+    })();
+  </script>
+
+</body>
+
+</html> 

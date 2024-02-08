@@ -1,0 +1,8 @@
+
+Birthday Notification ❌
+Note ❌
+Schedule (Repeat daily, weekly, monthly, annualy) ❌
+Personal Notification  ✔️
+Upcoming Events ✔️ (desired time range) ✔️ 
+Filter ❌
+

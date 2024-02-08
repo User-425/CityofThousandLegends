@@ -1,0 +1,71 @@
+
+body {
+    font-family: 'Trebuchet MS', Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(180deg, #343434 0%, #000000 100%);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #result {
+    margin-top: 20px;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    max-width: 350px;
+  }
+
+  #result img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  h1 {
+    margin-top: 20px;
+    font-size: 36px;
+    text-transform: uppercase;
+  }
+
+  #selectButton {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+    margin-top: 20px;
+  }
+
+  #selectButton:hover {
+    background-color: #0056b3;
+  }
+
+  h2 {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 10px 0;
+  }
+
+  #objectDescription {
+    font-style: italic;
+  }
