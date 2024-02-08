@@ -281,11 +281,14 @@ function checkScheduledEvents(eventList) {
     for (let index = 0; index < eventList.length; index++) {
         const event = eventList[index];
         const eventDateTime = new Date(`${event.date}T${event.time}`);
+        const repeat = event.repeat;
+        const date = new Date(event.date);
 
-        if ((eventDateTime <= now) && !event.activated) {
+        if ((eventDateTime <= now) && event.activated) {
             // Event has passed or is within the next minute, show notification
             showNotification('Event Reminder', `Upcoming Event: ${event.name}`);
-            event.activated = true;
+            incrementDate(date, repeat);
+            event.date = date.toISOString().split('T')[0];
 
             localStorage.setItem('events', JSON.stringify(eventList));
             displayEvents();
@@ -295,6 +298,27 @@ function checkScheduledEvents(eventList) {
     }
 }
 
+// Update event's date to next due date
+
+function incrementDate(date, frequency) {
+    switch (frequency) {
+        case 'daily':
+            date.setDate(date.getDate() + 1);
+            break;
+        case 'weekly':
+            date.setDate(date.getDate() + 7);
+            break;
+        case 'monthly':
+            date.setMonth(date.getMonth() + 1);
+            break;
+        case 'annually':
+            date.setFullYear(date.getFullYear() + 1);
+            break;
+        default:
+            break;
+    }
+    return date;
+}
 
 
 // Update the clock every second

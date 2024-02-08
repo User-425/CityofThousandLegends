@@ -1,8 +1,41 @@
+🌟 ------------------------ GG :D ------------------------- 🎉
 
-Birthday Notification ❌
-Note ❌
-Schedule (Repeat daily, weekly, monthly, annualy) ❌
 Personal Notification  ✔️
 Upcoming Events ✔️ (desired time range) ✔️ 
-Filter ❌
+Filter ❌/✔️ (?)
 
+
+
+
+
+
+🛑------------------------ Not Yet -----------------------🛑
+
+Schedule due past ❌
+Birthday Notification ❌
+Note ❌
+Calendar ❌
+
+
+
+
+🚧----------------- Working in Progress ------------------🚧
+
+Schedule (Repeat daily, weekly, monthly, annualy) ❌
+
+
+🛠️ -------- Work Flow -------- ⚙️ 
+
+1. Activating first notification
+❓ Event is activated and date is past from now 
+→ Notify, set event_date + repeat
+
+
+🐞 -------- Bug -------- ⚠️
+
+If even due some days ago, it will increment from it to tomorrow
+
+
+
+
+[]--------------------------------------------------------[]
